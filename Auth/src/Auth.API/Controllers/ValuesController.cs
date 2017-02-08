@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 
-namespace CyberU.OAuthAPI.Controllers
+namespace Auth.API.Controllers
 {
     [Route("api/[controller]")]
     public class ValuesController : Controller

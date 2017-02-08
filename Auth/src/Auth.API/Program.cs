@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 
-namespace CyberU.OAuthAPI
+namespace Auth.API
 {
     public class Program
     {
