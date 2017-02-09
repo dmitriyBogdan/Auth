@@ -16,9 +16,9 @@ namespace Auth.Initialization
                     AllowedGrantTypes = GrantTypes.ClientCredentials,
                     ClientSecrets =
                     {
-                        new Secret("secret".Sha256())
+                        new Secret("lms".Sha256())
                     },
-                    AllowedScopes = { "api" }
+                    AllowedScopes = { "LMS.public" }
                 }
             };
         }
@@ -27,7 +27,7 @@ namespace Auth.Initialization
         {
             return new List<ApiResource>
             {
-                new ApiResource("api", "Auth API")
+                new ApiResource("LMS.public", "Auth API")
             };
         }
     }
