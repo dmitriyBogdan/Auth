@@ -1,4 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using Auth.Initialization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -27,16 +27,27 @@ namespace Auth.API
         {
             // Add framework services.
             services.AddMvc();
+
+            services.AddIdentityServer()
+                    .AddTemporarySigningCredential()
+                    .AddInMemoryClients(FakeDataConfig.GetClients())
+                    .AddInMemoryApiResources(FakeDataConfig.GetApiResources());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        [SuppressMessage("Usage", "Nix10", Justification = "It doesn't work ok with dotnet core. Must be fixed in next versions")]
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
-            loggerFactory.AddConsole(this.Configuration.GetSection("Logging"));
-            loggerFactory.AddDebug();
+            if (env.IsDevelopment())
+            {
+                loggerFactory.AddConsole(this.Configuration.GetSection("Logging"));
+                loggerFactory.AddDebug();
+
+                app.UseDeveloperExceptionPage();
+            }
 
             app.UseMvc();
+
+            app.UseIdentityServer();
         }
     }
 }
