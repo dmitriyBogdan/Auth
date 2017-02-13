@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
+using IdentityServer4;
 using IdentityServer4.Models;
 
-namespace Auth.Initialization
+namespace Auth.API.Initialization
 {
     public class FakeDataConfig
     {
@@ -13,12 +14,20 @@ namespace Auth.Initialization
                 {
                     ClientId = "UI",
                     ClientName = "UI Client",
-                    AllowedGrantTypes = GrantTypes.ClientCredentials,
+                    AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
                     ClientSecrets =
                     {
                         new Secret("lms".Sha256())
                     },
-                    AllowedScopes = { "LMS.public" }
+                    AllowedScopes =
+                    {
+                        "LMS.public",
+                        "LMS.private",
+                        "LRS.private",
+                        "offline_access",
+                        IdentityServerConstants.StandardScopes.OpenId
+                    },
+                    AllowOfflineAccess = true
                 }
             };
         }
