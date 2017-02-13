@@ -43,12 +43,6 @@ namespace Auth.API
                     .AddInMemoryClients(FakeDataConfig.GetClients())
                     .AddInMemoryApiResources(FakeDataConfig.GetApiResources());
 
-            services.AddAuthorization(options =>
-            {
-                options.AddPolicy(Roles.Admin, policy => policy.RequireClaim(JwtClaimTypes.Role, Roles.Admin));
-                options.AddPolicy(Roles.User, policy => policy.RequireClaim(JwtClaimTypes.Role, Roles.User));
-            });
-
             string connectionString = this.Configuration.GetConnectionString("AuthDatabase");
             services.AddDbContext<AuthContext>(options => options.UseNpgsql(connectionString));
 

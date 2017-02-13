@@ -24,7 +24,7 @@ namespace Auth.API.Initialization
                         "LMS.public",
                         "LMS.private",
                         "LRS.private",
-                        "offline_access",
+                        IdentityServerConstants.StandardScopes.OfflineAccess,
                         IdentityServerConstants.StandardScopes.OpenId
                     },
                     AllowOfflineAccess = true
