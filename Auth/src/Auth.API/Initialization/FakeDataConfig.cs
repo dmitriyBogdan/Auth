@@ -14,7 +14,7 @@ namespace Auth.API.Initialization
                 {
                     ClientId = "UI",
                     ClientName = "UI Client",
-                    AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
+                    AllowedGrantTypes = GrantTypes.ResourceOwnerPasswordAndClientCredentials,
                     ClientSecrets =
                     {
                         new Secret("lms".Sha256())
