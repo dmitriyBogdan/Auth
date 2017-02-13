@@ -20,10 +20,14 @@
       "type": "build"
     },
     "IdentityServer4": "1.1.0",
-    "IdentityServer4.AspNetIdentity": "1.0.0",
     "IdentityServer4.AccessTokenValidation": "1.0.5",
-    "Microsoft.AspNetCore.Diagnostics": "1.0.0",
-    "Microsoft.Extensions.Configuration.CommandLine": "1.1.0"
+    "Microsoft.Extensions.Configuration.CommandLine": "1.1.0",
+    "Microsoft.AspNetCore.Diagnostics": "1.1.0",
+    "FluentValidation.AspNetCore": "6.4.0-rc3",
+    "Microsoft.EntityFrameworkCore": "1.1.0",
+    "Auth.DAL": "1.0.0-*",
+    "Auth.BLL": "1.0.0-*",
+    "Microsoft.EntityFrameworkCore.Relational": "1.1.0"
   },
 
   "tools": {
@@ -42,7 +46,7 @@
   "buildOptions": {
     "emitEntryPoint": true,
     "preserveCompilationContext": true,
-    "additionalArguments": [ "/ruleset:StyleCop/Nix.StyleCop.Analyzers.ruleset", "/additionalfile:StyleCop/nix.stylecop.settings.json" ]
+    "additionalArguments": [ "/ruleset:StyleCop/Nix.StyleCop.Analyzers.ruleset" ]
   },
 
   "runtimeOptions": {
