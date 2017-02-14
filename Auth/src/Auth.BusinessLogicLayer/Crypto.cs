@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Security.Cryptography;
 using System.Text;
-using Auth.BLL.Interfaces;
+using Auth.BusinessLogicLayer.Interfaces;
 
-namespace Auth.BLL
+namespace Auth.BusinessLogicLayer
 {
     public class Crypto : ICrypto
     {

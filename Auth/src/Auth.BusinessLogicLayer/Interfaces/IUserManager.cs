@@ -1,8 +1,8 @@
 ﻿using System.Threading.Tasks;
-using Auth.BLL.Models;
-using Auth.DAL.Entities;
+using Auth.BusinessLogicLayer.Models;
+using Auth.DataAccessLayer.Entities;
 
-namespace Auth.BLL.Interfaces
+namespace Auth.BusinessLogicLayer.Interfaces
 {
     public interface IUserManager
     {

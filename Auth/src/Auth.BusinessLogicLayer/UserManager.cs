@@ -1,12 +1,12 @@
 ﻿using System.Threading.Tasks;
-using Auth.BLL.Interfaces;
-using Auth.BLL.Models;
-using Auth.DAL;
-using Auth.DAL.Entities;
+using Auth.BusinessLogicLayer.Interfaces;
+using Auth.BusinessLogicLayer.Models;
+using Auth.DataAccessLayer;
+using Auth.DataAccessLayer.Entities;
 using IdentityModel;
 using Microsoft.EntityFrameworkCore;
 
-namespace Auth.BLL
+namespace Auth.BusinessLogicLayer
 {
     public class UserManager : IUserManager
     {

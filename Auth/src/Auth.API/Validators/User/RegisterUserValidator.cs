@@ -1,5 +1,5 @@
 ﻿using Auth.API.ViewModels.User;
-using Auth.DAL;
+using Auth.DataAccessLayer;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 

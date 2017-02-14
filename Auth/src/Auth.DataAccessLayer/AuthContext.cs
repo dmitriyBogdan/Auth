@@ -1,7 +1,7 @@
-﻿using Auth.DAL.Entities;
+﻿using Auth.DataAccessLayer.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace Auth.DAL
+namespace Auth.DataAccessLayer
 {
     public class AuthContext : DbContext
     {

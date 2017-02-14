@@ -1,6 +1,6 @@
-﻿using Auth.DAL.Entities;
+﻿using Auth.DataAccessLayer.Entities;
 
-namespace Auth.BLL.Models
+namespace Auth.BusinessLogicLayer.Models
 {
     public class UserValidationModel
     {

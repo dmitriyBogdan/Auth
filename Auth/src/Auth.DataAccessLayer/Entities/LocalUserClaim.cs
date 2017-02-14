@@ -1,4 +1,4 @@
-﻿namespace Auth.DAL.Entities
+﻿namespace Auth.DataAccessLayer.Entities
 {
     public class LocalUserClaim
     {

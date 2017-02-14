@@ -1,12 +1,12 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
-using Auth.BLL.Interfaces;
-using Auth.BLL.Models;
+using Auth.BusinessLogicLayer.Interfaces;
+using Auth.BusinessLogicLayer.Models;
 using IdentityModel;
 using IdentityServer4.Validation;
 using Claim = System.Security.Claims.Claim;
 
-namespace Auth.BLL
+namespace Auth.BusinessLogicLayer
 {
     public class ResourceOwnerPasswordValidator : IResourceOwnerPasswordValidator
     {

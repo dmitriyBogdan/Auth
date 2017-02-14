@@ -1,5 +1,5 @@
 ﻿using Auth.API.ViewModels.User;
-using Auth.BLL.Models;
+using Auth.BusinessLogicLayer.Models;
 
 namespace Auth.API.Extensions
 {

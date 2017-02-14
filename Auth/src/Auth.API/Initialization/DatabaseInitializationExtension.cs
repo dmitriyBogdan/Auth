@@ -1,4 +1,4 @@
-﻿using Auth.DAL;
+﻿using Auth.DataAccessLayer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;

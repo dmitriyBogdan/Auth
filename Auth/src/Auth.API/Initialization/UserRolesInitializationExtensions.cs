@@ -1,6 +1,6 @@
 ﻿using System.Linq;
-using Auth.DAL;
-using Auth.DAL.Entities;
+using Auth.DataAccessLayer;
+using Auth.DataAccessLayer.Entities;
 using IdentityModel;
 using Microsoft.AspNetCore.Builder;
 

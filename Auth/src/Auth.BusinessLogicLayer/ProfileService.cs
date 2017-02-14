@@ -5,7 +5,7 @@ using IdentityServer4.Models;
 using IdentityServer4.Services;
 using Claim = System.Security.Claims.Claim;
 
-namespace Auth.BLL
+namespace Auth.BusinessLogicLayer
 {
     public class ProfileService : IProfileService
     {

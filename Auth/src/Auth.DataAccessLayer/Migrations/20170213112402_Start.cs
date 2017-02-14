@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace Auth.DAL.Migrations
+namespace Auth.DataAccessLayer.Migrations
 {
     public partial class Start : Migration
     {

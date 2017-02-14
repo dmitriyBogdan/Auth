@@ -1,4 +1,4 @@
-﻿namespace Auth.BLL.Interfaces
+﻿namespace Auth.BusinessLogicLayer.Interfaces
 {
     public interface ICrypto
     {

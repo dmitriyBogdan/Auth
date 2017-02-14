@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Auth.API.Extensions;
 using Auth.API.ViewModels.User;
-using Auth.BLL.Interfaces;
+using Auth.BusinessLogicLayer.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Auth.API.Controllers

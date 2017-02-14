@@ -2,7 +2,7 @@
   "version": "1.0.0-*",
 
   "dependencies": {
-    "Auth.DAL": "1.0.0-*",
+    "Auth.DataAccessLayer": "1.0.0-*",
     "IdentityServer4": "1.1.0",
     "Microsoft.EntityFrameworkCore": "1.1.0",
     "NETStandard.Library": "1.6.1",

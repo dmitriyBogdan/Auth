@@ -1,10 +1,8 @@
 ﻿using Auth.API.Initialization;
-using Auth.BLL;
-using Auth.BLL.Interfaces;
-using Auth.DAL;
-using Auth.DAL.Entities;
+using Auth.BusinessLogicLayer;
+using Auth.BusinessLogicLayer.Interfaces;
+using Auth.DataAccessLayer;
 using FluentValidation.AspNetCore;
-using IdentityModel;
 using IdentityServer4.Services;
 using IdentityServer4.Validation;
 using Microsoft.AspNetCore.Builder;
@@ -69,14 +67,6 @@ namespace Auth.API
             }
 
             app.InitRoles();
-
-            app.UseIdentityServerAuthentication(new IdentityServerAuthenticationOptions
-            {
-                Authority = "http://localhost:5000",
-                RequireHttpsMetadata = false,
-
-                ApiName = "LMS.public"
-            });
 
             app.UseMvc();
 

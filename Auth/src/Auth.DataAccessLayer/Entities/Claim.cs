@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Auth.DAL.Entities
+namespace Auth.DataAccessLayer.Entities
 {
     public class Claim
     {
