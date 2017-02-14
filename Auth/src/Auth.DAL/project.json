@@ -1,0 +1,24 @@
+{
+  "version": "1.0.0-*",
+
+  "dependencies": {
+    "Microsoft.EntityFrameworkCore": "1.1.0",
+    "Microsoft.EntityFrameworkCore.Tools": "1.1.0-preview4-final",
+    "NETStandard.Library": "1.6.1",
+    "Npgsql.EntityFrameworkCore.PostgreSQL": "1.1.0",
+    "StyleCop.Analyzers": {
+      "version": "1.0.0",
+      "type": "build"
+    }
+  },
+
+  "frameworks": {
+    "netstandard1.6": {
+      "imports": "dnxcore50"
+    }
+  },
+
+  "buildOptions": {
+    "additionalArguments": [ "/ruleset:StyleCop/Nix.StyleCop.Analyzers.ruleset" ]
+  }
+}
