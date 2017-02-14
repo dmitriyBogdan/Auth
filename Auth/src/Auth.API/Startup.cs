@@ -1,4 +1,6 @@
-﻿using Auth.Initialization;
+﻿using System.IO;
+using System.Security.Cryptography.X509Certificates;
+using Auth.Initialization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -9,6 +11,10 @@ namespace Auth.API
 {
     public class Startup
     {
+        public IConfigurationRoot Configuration { get; }
+
+        private readonly IHostingEnvironment environment;
+
         public Startup(IHostingEnvironment env)
         {
             var builder = new ConfigurationBuilder()
@@ -17,19 +23,22 @@ namespace Auth.API
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
                 .AddEnvironmentVariables();
 
+            this.environment = env;
+
             this.Configuration = builder.Build();
         }
-
-        public IConfigurationRoot Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            // Add framework services.
+            var cert = new X509Certificate2(
+                 Path.Combine(this.environment.ContentRootPath, this.Configuration.GetSection("Hosting:CertName").Value),
+                              this.Configuration.GetSection("Hosting:CertPassword").Value);
+
             services.AddMvc();
 
             services.AddIdentityServer()
-                    .AddTemporarySigningCredential()
+                    .AddSigningCredential(cert)
                     .AddInMemoryClients(FakeDataConfig.GetClients())
                     .AddInMemoryApiResources(FakeDataConfig.GetApiResources());
         }
