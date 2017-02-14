@@ -1,10 +1,10 @@
-﻿using Auth.API.Initialization;
+﻿using System.IO;
+using System.Security.Cryptography.X509Certificates;
+using Auth.API.Initialization;
 using Auth.BLL;
 using Auth.BLL.Interfaces;
 using Auth.DAL;
-using Auth.DAL.Entities;
 using FluentValidation.AspNetCore;
-using IdentityModel;
 using IdentityServer4.Services;
 using IdentityServer4.Validation;
 using Microsoft.AspNetCore.Builder;
@@ -18,6 +18,10 @@ namespace Auth.API
 {
     public class Startup
     {
+        public IConfigurationRoot Configuration { get; }
+
+        private readonly IHostingEnvironment environment;
+
         public Startup(IHostingEnvironment env)
         {
             var builder = new ConfigurationBuilder()
@@ -26,20 +30,23 @@ namespace Auth.API
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
                 .AddEnvironmentVariables();
 
+            this.environment = env;
+
             this.Configuration = builder.Build();
         }
-
-        public IConfigurationRoot Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            // Add framework services.
+            var cert = new X509Certificate2(
+                 Path.Combine(this.environment.ContentRootPath, this.Configuration.GetSection("Hosting:CertName").Value),
+                              this.Configuration.GetSection("Hosting:CertPassword").Value);
+
             services.AddMvc()
                     .AddFluentValidation(x => x.RegisterValidatorsFromAssemblyContaining<Startup>());
 
             services.AddIdentityServer()
-                    .AddTemporarySigningCredential()
+                    .AddSigningCredential(cert)
                     .AddInMemoryClients(FakeDataConfig.GetClients())
                     .AddInMemoryApiResources(FakeDataConfig.GetApiResources());
 
@@ -69,15 +76,6 @@ namespace Auth.API
             }
 
             app.InitRoles();
-
-            app.UseIdentityServerAuthentication(new IdentityServerAuthenticationOptions
-            {
-                Authority = "http://localhost:5000",
-                RequireHttpsMetadata = false,
-
-                ApiName = "LMS.public"
-            });
-
             app.UseMvc();
 
             app.UseIdentityServer();
