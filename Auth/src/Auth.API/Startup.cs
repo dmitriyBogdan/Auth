@@ -5,6 +5,7 @@ using Auth.BLL;
 using Auth.BLL.Interfaces;
 using Auth.DAL;
 using FluentValidation.AspNetCore;
+using IdentityServer4;
 using IdentityServer4.Services;
 using IdentityServer4.Validation;
 using Microsoft.AspNetCore.Builder;
@@ -39,16 +40,16 @@ namespace Auth.API
         public void ConfigureServices(IServiceCollection services)
         {
             var cert = new X509Certificate2(
-                 Path.Combine(this.environment.ContentRootPath, this.Configuration.GetSection("Hosting:CertName").Value),
-                              this.Configuration.GetSection("Hosting:CertPassword").Value);
+                Path.Combine(this.environment.ContentRootPath, this.Configuration.GetSection("Hosting:CertName").Value),
+                this.Configuration.GetSection("Hosting:CertPassword").Value);
 
             services.AddMvc()
-                    .AddFluentValidation(x => x.RegisterValidatorsFromAssemblyContaining<Startup>());
+                .AddFluentValidation(x => x.RegisterValidatorsFromAssemblyContaining<Startup>());
 
             services.AddIdentityServer()
-                    .AddSigningCredential(cert)
-                    .AddInMemoryClients(FakeDataConfig.GetClients())
-                    .AddInMemoryApiResources(FakeDataConfig.GetApiResources());
+                .AddSigningCredential(cert)
+                .AddInMemoryClients(FakeDataConfig.GetClients())
+                .AddInMemoryApiResources(FakeDataConfig.GetApiResources());
 
             string connectionString = this.Configuration.GetConnectionString("AuthDatabase");
             services.AddDbContext<AuthContext>(options => options.UseNpgsql(connectionString));
@@ -75,10 +76,20 @@ namespace Auth.API
                 app.ApplyMigrations();
             }
 
-            app.InitRoles();
-            app.UseMvc();
-
             app.UseIdentityServer();
+            app.UseCookieAuthentication(new CookieAuthenticationOptions
+            {
+                AuthenticationScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme,
+
+                AutomaticAuthenticate = false,
+                AutomaticChallenge = false
+            });
+
+            app.InitRoles();
+            app.UseFacebook(this.Configuration);
+            app.UseLinkedin(this.Configuration);
+
+            app.UseMvc();
         }
     }
 }
