@@ -18,7 +18,8 @@ namespace Auth.API.Initialization
                 AuthenticationScheme = config["Facebook:AuthScheme"],
                 SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme,
                 AppId = config["Facebook:ClientId"],
-                AppSecret = config["Facebook:ClientSecret"]
+                AppSecret = config["Facebook:ClientSecret"],
+                SaveTokens = true
             });
 
             return app;

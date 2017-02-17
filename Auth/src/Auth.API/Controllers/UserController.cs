@@ -9,7 +9,9 @@ using Auth.BLL.Interfaces;
 using IdentityModel;
 using IdentityServer4;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Authentication;
 using Microsoft.AspNetCore.Http.Features.Authentication;
 using Microsoft.AspNetCore.Mvc;
@@ -62,37 +64,21 @@ namespace Auth.API.Controllers
                 throw new Exception("External authentication error");
             }
 
-            var claims = tempUser.Claims.ToList();
-            var userIdClaim = claims.FirstOrDefault(x => x.Type == JwtClaimTypes.Subject);
-            if (userIdClaim == null)
-            {
-                userIdClaim = claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier);
-            }
-
-            if (userIdClaim == null)
-            {
-                throw new Exception("Unknown userid");
-            }
-
-            claims.Remove(userIdClaim);
-            var provider = info.Properties.Items["scheme"];
+            var externalUser = tempUser.GetExternalUser();
+            await this.userManager.AddExternalUser(externalUser);
+            AuthenticationProperties props = new AuthenticationProperties();
             var additionalClaims = new List<Claim>();
-            var sid = claims.FirstOrDefault(x => x.Type == JwtClaimTypes.SessionId);
+            var sid = tempUser.Claims.FirstOrDefault(x => x.Type == JwtClaimTypes.SessionId);
             if (sid != null)
             {
                 additionalClaims.Add(new Claim(JwtClaimTypes.SessionId, sid.Value));
             }
 
-            AuthenticationProperties props = null;
-            var id_token = info.Properties.GetTokenValue("id_token");
-            if (id_token != null)
-            {
-                props = new AuthenticationProperties();
-                props.StoreTokens(new[] { new AuthenticationToken { Name = "id_token", Value = id_token } });
-            }
+            props.StoreTokens(new[] { new AuthenticationToken { Name = "id_token", Value = info.Properties.GetTokenValue("access_token") } });
+            await this.HttpContext.Authentication.SignInAsync(externalUser.NameIdentifier, externalUser.FullName, externalUser.Provider, props, additionalClaims.ToArray());
 
             await this.HttpContext.Authentication.SignOutAsync(IdentityServerConstants.ExternalCookieAuthenticationScheme);
-            return this.Redirect("~/");
+            return this.RedirectToAction("CheckRegistr");
         }
     }
 }

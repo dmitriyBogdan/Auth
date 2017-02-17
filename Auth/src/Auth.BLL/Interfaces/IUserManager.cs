@@ -9,5 +9,7 @@ namespace Auth.BLL.Interfaces
         Task Register(UserModel model);
 
         Task<UserValidationModel> VerifyUser(string email, string password);
+
+        Task AddExternalUser(ExternalUser externalUser);
     }
 }

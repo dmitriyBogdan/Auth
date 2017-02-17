@@ -1,9 +1,11 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Auth.BLL.Interfaces;
 using Auth.BLL.Models;
 using Auth.DAL;
 using Auth.DAL.Entities;
 using IdentityModel;
+using IdentityServer4.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace Auth.BLL
@@ -77,6 +79,38 @@ namespace Auth.BLL
             }
 
             return model;
+        }
+
+        public async Task AddExternalUser(ExternalUser externalUser)
+        {
+            var existLocalUser = await this.context.LocalUsers.FirstOrDefaultAsync(x => x.Email == externalUser.Email);
+            if (existLocalUser != null)
+            {
+                if (!await this.context.ExternalUsers.AnyAsync(x => x.Email == externalUser.Email))
+                {
+                    await this.AddExternalToLocalUser(externalUser, existLocalUser);
+                }
+            }
+            else
+            {
+                await this.AddExistLocalUserAndExternal(externalUser);
+            }
+        }
+
+        private async Task AddExternalToLocalUser(ExternalUser externalUser, LocalUser existLocalUser)
+        {
+            externalUser.User = existLocalUser;
+            await this.context.ExternalUsers.AddAsync(externalUser);
+            await this.context.SaveChangesAsync();
+        }
+
+        private async Task AddExistLocalUserAndExternal(ExternalUser externalUser)
+        {
+            var localUser = await this.CreateUser(new UserModel() { Email = externalUser.Email });
+            await this.AddRoleClaim(localUser);
+            externalUser.User = localUser;
+            await this.context.ExternalUsers.AddAsync(externalUser);
+            await this.context.SaveChangesAsync();
         }
     }
 }
