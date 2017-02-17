@@ -78,7 +78,7 @@ namespace Auth.API.Controllers
             await this.HttpContext.Authentication.SignInAsync(externalUser.NameIdentifier, externalUser.FullName, externalUser.Provider, props, additionalClaims.ToArray());
 
             await this.HttpContext.Authentication.SignOutAsync(IdentityServerConstants.ExternalCookieAuthenticationScheme);
-            return this.RedirectToAction("CheckRegistr");
+            return this.RedirectToAction("~/");
         }
     }
 }
