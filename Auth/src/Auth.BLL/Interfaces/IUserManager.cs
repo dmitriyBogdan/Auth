@@ -1,6 +1,8 @@
-﻿using System.Threading.Tasks;
+﻿using System.Security.Claims;
+using System.Threading.Tasks;
 using Auth.BLL.Models;
 using Auth.DAL.Entities;
+using Microsoft.AspNetCore.Http;
 
 namespace Auth.BLL.Interfaces
 {
@@ -11,5 +13,7 @@ namespace Auth.BLL.Interfaces
         Task<UserValidationModel> VerifyUser(string email, string password);
 
         Task AddExternalUser(ExternalUser externalUser);
+
+        Task<string> GetToken(HttpContext httpContext, ClaimsPrincipal tempUser);
     }
 }

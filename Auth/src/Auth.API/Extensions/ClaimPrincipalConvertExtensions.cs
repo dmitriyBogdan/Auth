@@ -21,7 +21,7 @@ namespace Auth.API.Extensions
                 FullName = identity.Name,
                 Email = claims.FirstOrDefault(x => x.Type == ClaimTypes.Email).Value,
                 FirstName = claims.FirstOrDefault(x => x.Type == ClaimTypes.GivenName)?.Value,
-                NameIdentifier = claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier).Value,
+                NameIdentifier = claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value,
                 Surname = claims.FirstOrDefault(x => x.Type == ClaimTypes.Surname)?.Value
             };
         }
