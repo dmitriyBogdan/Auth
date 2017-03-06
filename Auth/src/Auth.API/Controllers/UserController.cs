@@ -100,7 +100,7 @@ namespace Auth.API.Controllers
                 additionalClaims.Add(new Claim(JwtClaimTypes.SessionId, sid.Value));
             }
 
-            props.StoreTokens(new[] { new AuthenticationToken { Name = "id_token", Value = info.Properties.GetTokenValue("id_token") } });
+            props.StoreTokens(new[] { new AuthenticationToken { Name = "id_token", Value = info.Properties.GetTokenValue("access_token") } });
             await this.HttpContext.Authentication.SignInAsync(new Guid().ToString(), externalUser.Email, externalUser.Provider, props, additionalClaims.ToArray());
             await this.HttpContext.Authentication.SignOutAsync(IdentityServerConstants.ExternalCookieAuthenticationScheme);
             return this.Redirect("returnUrl");
@@ -125,14 +125,6 @@ namespace Auth.API.Controllers
         {
             var info = await this.HttpContext.Authentication.GetAuthenticateInfoAsync(IdentityServerConstants.ExternalCookieAuthenticationScheme);
             await this.HttpContext.Authentication.SignOutAsync(IdentityServerConstants.ExternalCookieAuthenticationScheme);
-            return this.RedirectToAction(nameof(this.ExternalLogin), new { provider = info.Principal.Identity.AuthenticationType.ToLower() });
-        }
-
-        [Route("sucess")]
-        public async Task<IActionResult> AccessDenied()
-        {
-            var info = await this.HttpContext.Authentication.GetAuthenticateInfoAsync(IdentityServerConstants.ExternalCookieAuthenticationScheme);
-            this.HttpContext.Response.Cookies.Append(".AspNetCore." + IdentityServerConstants.ExternalCookieAuthenticationScheme, "214124");
             return this.RedirectToAction(nameof(this.ExternalLogin), new { provider = info.Principal.Identity.AuthenticationType.ToLower() });
         }
     }

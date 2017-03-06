@@ -135,7 +135,7 @@ namespace Auth.API.Extensions
             var roleClime = new Claim(ClaimTypes.Role, securityToken.Claims.FirstOrDefault(x => x.Type == "role").Value);
             var claimPrincipal = new ClaimsPrincipal(Identity.Create(this.Options.AuthenticationScheme, emailClime, roleClime));
             AuthenticationProperties prop = new AuthenticationProperties();
-            prop.StoreTokens(new[] { new AuthenticationToken { Name = "id_token", Value = new Guid().ToString() } });
+            prop.StoreTokens(new[] { new AuthenticationToken { Name = "access_token", Value = responseToken.AccessToken } });
             var token = new AuthenticationTicket(claimPrincipal, prop, this.Options.AuthenticationScheme);
             return AuthenticateResult.Success(token);
         }
