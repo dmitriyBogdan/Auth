@@ -16,16 +16,7 @@ namespace Auth.API.Extensions
             this.AuthorizationEndpoint = "http://localhost:5001/connect/authorize";
             this.UserInformationEndpoint = "http://localhost:5001/connect/authorize";
             this.CallbackPath = "/ExternalLogin";
-            this.Events = new OAuthEvents()
-            {
-                OnRedirectToAuthorizationEndpoint = this.OnRedirectToAuthorizationEndpoint
-            };
         }
-
-        private Task OnRedirectToAuthorizationEndpoint(OAuthRedirectToAuthorizationContext oAuthRedirectToAuthorizationContext)
-        {
-            oAuthRedirectToAuthorizationContext.HttpContext.Request.PathBase = this.CallbackPath;
-            return Task.FromResult("Ok");
-        }
+        
     }
 }
