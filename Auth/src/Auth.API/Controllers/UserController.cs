@@ -16,8 +16,11 @@ using IdentityServer4.Models;
 using IdentityServer4.Services;
 using IdentityServer4.Validation;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Authentication;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Internal;
 using Claim = System.Security.Claims.Claim;
 
 namespace Auth.API.Controllers
@@ -26,11 +29,12 @@ namespace Auth.API.Controllers
     {
         private readonly IUserManager userManager;
 
-        public UserController(IUserManager userManager, ITokenService tokenService)
+        public UserController(IUserManager userManager)
         {
             this.userManager = userManager;
         }
 
+        [Authorize]
         [Route("Register")]
         public async Task<IActionResult> Register()
         {
@@ -63,12 +67,6 @@ namespace Auth.API.Controllers
             return this.Redirect("/");
         }
 
-        [Route("Account/Login")]
-        public void Login(string returnUrl)
-        {
-            var x = this.HttpContext.Items;
-        }
-
         private ExternalUser GetExternalUser(IEnumerable<Claim> claims)
         {
             return new ExternalUser()
@@ -89,7 +87,7 @@ namespace Auth.API.Controllers
             var tempUser = info?.Principal;
             if (tempUser == null)
             {
-                throw new Exception("External authentication error");
+                new ArgumentException("No setup cookies");
             }
 
             var externalUser = tempUser.GetExternalUser();
@@ -105,12 +103,12 @@ namespace Auth.API.Controllers
             props.StoreTokens(new[] { new AuthenticationToken { Name = "id_token", Value = info.Properties.GetTokenValue("id_token") } });
             await this.HttpContext.Authentication.SignInAsync(new Guid().ToString(), externalUser.Email, externalUser.Provider, props, additionalClaims.ToArray());
             await this.HttpContext.Authentication.SignOutAsync(IdentityServerConstants.ExternalCookieAuthenticationScheme);
-            return this.Redirect(this.AddQuery(returnUrl));
+            return this.Redirect("returnUrl");
         }
 
         [HttpGet]
         [Route("ExternalLogin")]
-        public IActionResult ExternalLogin(string provider = "", string returnUrl = "")
+        public IActionResult ExternalLogin(string provider, string returnUrl = "", string sid = "", string domain = "")
         {
             returnUrl = this.Url.Action("ExternalLoginCallback", new { returnUrl = returnUrl });
             var props = new AuthenticationProperties
@@ -122,10 +120,20 @@ namespace Auth.API.Controllers
             return new ChallengeResult(provider, props);
         }
 
-        public string AddQuery(string url)
+        [Route("ErrorHandler")]
+        public async Task<IActionResult> ErrorHandler()
         {
-            url += $"?client_Id=UI&response_Type=token&response_Mode=form_post&redirect_uri=http://localhost:5000/VseZaebis&state={CryptoRandom.CreateUniqueId()}&nonce={CryptoRandom.CreateUniqueId()}&scope=LMS.public";
-            return url;
+            var info = await this.HttpContext.Authentication.GetAuthenticateInfoAsync(IdentityServerConstants.ExternalCookieAuthenticationScheme);
+            await this.HttpContext.Authentication.SignOutAsync(IdentityServerConstants.ExternalCookieAuthenticationScheme);
+            return this.RedirectToAction(nameof(this.ExternalLogin), new { provider = info.Principal.Identity.AuthenticationType.ToLower() });
+        }
+
+        [Route("sucess")]
+        public async Task<IActionResult> AccessDenied()
+        {
+            var info = await this.HttpContext.Authentication.GetAuthenticateInfoAsync(IdentityServerConstants.ExternalCookieAuthenticationScheme);
+            this.HttpContext.Response.Cookies.Append(".AspNetCore." + IdentityServerConstants.ExternalCookieAuthenticationScheme, "214124");
+            return this.RedirectToAction(nameof(this.ExternalLogin), new { provider = info.Principal.Identity.AuthenticationType.ToLower() });
         }
     }
 }

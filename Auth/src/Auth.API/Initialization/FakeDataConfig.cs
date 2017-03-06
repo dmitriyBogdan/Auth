@@ -14,20 +14,21 @@ namespace Auth.API.Initialization
                 {
                     ClientId = "UI",
                     ClientName = "UI Client",
-                    AllowedGrantTypes = GrantTypes.ResourceOwnerPasswordAndClientCredentials,
+                    AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
                     ClientSecrets =
                     {
                         new Secret("lms".Sha256())
                     },
                     AllowedScopes =
                     {
+                        IdentityServerConstants.StandardScopes.OpenId,
                         "LMS.public",
                         "LMS.private",
                         "LRS.private",
-                        IdentityServerConstants.StandardScopes.OfflineAccess,
-                        IdentityServerConstants.StandardScopes.OpenId
+                        IdentityServerConstants.StandardScopes.OfflineAccess
                     },
-                    AllowOfflineAccess = true
+                    RedirectUris = { "http://localhost:5000/VseZaebis" },
+                    AccessTokenType = AccessTokenType.Jwt
                 }
             };
         }
@@ -38,6 +39,16 @@ namespace Auth.API.Initialization
             {
                 new ApiResource("LMS.public", "Auth API")
             };
+        }
+
+        public static IEnumerable<IdentityResource> GetIdentityResources()
+        {
+            return new List<IdentityResource>
+    {
+        new IdentityResources.OpenId(),
+        new IdentityResources.Profile(),
+        new IdentityResources.Profile()
+    };
         }
     }
 }

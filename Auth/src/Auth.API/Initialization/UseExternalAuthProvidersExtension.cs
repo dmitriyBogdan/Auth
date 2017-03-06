@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AspNet.Security.OAuth.LinkedIn;
+using Auth.API.Extensions;
 using IdentityServer4;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
@@ -27,13 +28,35 @@ namespace Auth.API.Initialization
 
         public static IApplicationBuilder UseLinkedin(this IApplicationBuilder app, IConfiguration config)
         {
-            Console.WriteLine($"{config["LinkedIn:AuthScheme"]}   |   {config["LinkedIn:ClientId"]}     |   {config["LinkedIn:ClientSecret"]}");
             app.UseLinkedInAuthentication(new LinkedInAuthenticationOptions()
             {
                 AuthenticationScheme = config["LinkedIn:AuthScheme"],
                 SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme,
                 ClientId = config["LinkedIn:ClientId"],
                 ClientSecret = config["LinkedIn:ClientSecret"]
+            });
+            return app;
+        }
+
+        public static IApplicationBuilder UseProxy(this IApplicationBuilder app, IConfiguration config)
+        {
+            app.UseProxyMiddleware(new ProxyOauthOptions()
+            {
+                SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme,
+                ClientId = config["proxy:ClientId"],
+                ClientSecret = config["proxy:ClientSecret"]
+            });
+            return app;
+        }
+
+        public static IApplicationBuilder UseCookies(this IApplicationBuilder app, IConfiguration config)
+        {
+            app.UseCookieAuthentication(new CookieAuthenticationOptions
+            {
+                AuthenticationScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme,
+                AutomaticAuthenticate = false,
+                AutomaticChallenge = false,
+                AccessDeniedPath = "/ErrorHandler"
             });
             return app;
         }

@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System;
+using System.IdentityModel.Tokens.Jwt;
+using System.IO;
 using System.Security.Cryptography.X509Certificates;
 using Auth.API.Initialization;
 using Auth.BLL;
@@ -6,14 +8,21 @@ using Auth.BLL.Interfaces;
 using Auth.DAL;
 using FluentValidation.AspNetCore;
 using IdentityServer4;
+using IdentityServer4.Endpoints;
+using IdentityServer4.Hosting;
 using IdentityServer4.Services;
 using IdentityServer4.Validation;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.DataProtection.Internal;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Auth.API
 {
@@ -49,7 +58,8 @@ namespace Auth.API
             services.AddIdentityServer()
                 .AddSigningCredential(cert)
                 .AddInMemoryClients(FakeDataConfig.GetClients())
-                .AddInMemoryApiResources(FakeDataConfig.GetApiResources());
+                .AddInMemoryApiResources(FakeDataConfig.GetApiResources())
+                .AddInMemoryIdentityResources(FakeDataConfig.GetIdentityResources());
 
             string connectionString = this.Configuration.GetConnectionString("AuthDatabase");
             services.AddDbContext<AuthContext>(options => options.UseNpgsql(connectionString));
@@ -77,15 +87,13 @@ namespace Auth.API
             }
 
             app.UseIdentityServer();
-            app.UseCookieAuthentication(new CookieAuthenticationOptions
-            {
-                AuthenticationScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme,
-
-                AutomaticAuthenticate = false,
-                AutomaticChallenge = false
-            });
-
+            app.UseCookies(this.Configuration);
             app.InitRoles();
+            if (Convert.ToBoolean(this.Configuration["Settings:IsProxy"]))
+            {
+                app.UseProxy(this.Configuration);
+            }
+
             app.UseFacebook(this.Configuration);
             app.UseLinkedin(this.Configuration);
 
