@@ -109,19 +109,8 @@ namespace Auth.API.Controllers
 
         [HttpGet]
         [Route("ExternalLogin")]
-        public async Task<IActionResult> ExternalLogin(string provider, string returnUrl = "", string sid = "", string domain = "")
+        public IActionResult ExternalLogin(string provider, string returnUrl = "", string sid = "", string domain = "")
         {
-            var local = await
-                    this.HttpContext.Authentication.GetAuthenticateInfoAsync(
-                        IdentityServerConstants.DefaultCookieAuthenticationScheme);
-            if (local.Principal != null)
-            {
-                if (local.Principal.Claims.FirstOrDefault(x => x.Type == "idp").Value.ToLower() == provider.Trim())
-                {
-                    return this.Redirect(returnUrl);
-                }
-            }
-
             returnUrl = this.Url.Action("ExternalLoginCallback", new { returnUrl = returnUrl });
             var props = new AuthenticationProperties
             {
@@ -134,10 +123,10 @@ namespace Auth.API.Controllers
 
         [HttpGet]
         [Route("Logout")]
-        public async Task<IActionResult> Logout()
+        public async Task<IActionResult> Logout(string returnUrl = "/")
         {
             await this.HttpContext.Authentication.SignOutAsync();
-            return this.Redirect("/");
+            return this.Redirect(returnUrl);
         }
 
         [Route("ErrorHandler")]
