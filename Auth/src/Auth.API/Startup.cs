@@ -4,8 +4,11 @@ using System.IO;
 using System.Security.Cryptography.X509Certificates;
 using Auth.API.Initialization;
 using Auth.BLL;
+using Auth.BLL.DomainManagmant;
 using Auth.BLL.Interfaces;
+using Auth.BLL.UserManagement;
 using Auth.DAL;
+using Auth.DAL.ProxyContext;
 using FluentValidation.AspNetCore;
 using IdentityServer4;
 using IdentityServer4.Endpoints;
@@ -30,6 +33,7 @@ namespace Auth.API
     {
         public IConfigurationRoot Configuration { get; }
 
+        private readonly bool isProxy;
         private readonly IHostingEnvironment environment;
 
         public Startup(IHostingEnvironment env)
@@ -41,8 +45,8 @@ namespace Auth.API
                 .AddEnvironmentVariables();
 
             this.environment = env;
-
             this.Configuration = builder.Build();
+            this.isProxy = Convert.ToBoolean(this.Configuration["Settings:IsProxy"]);
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -60,14 +64,24 @@ namespace Auth.API
                 .AddInMemoryClients(FakeDataConfig.GetClients())
                 .AddInMemoryApiResources(FakeDataConfig.GetApiResources())
                 .AddInMemoryIdentityResources(FakeDataConfig.GetIdentityResources());
-
-            string connectionString = this.Configuration.GetConnectionString("AuthDatabase");
-            services.AddDbContext<AuthContext>(options => options.UseNpgsql(connectionString));
-
-            services.AddTransient<ICrypto, Crypto>();
-            services.AddTransient<IUserManager, UserManager>();
-            services.AddTransient<IResourceOwnerPasswordValidator, ResourceOwnerPasswordValidator>();
-            services.AddTransient<IProfileService, ProfileService>();
+            if (this.isProxy)
+            {
+                string connectionString = this.Configuration.GetConnectionString("AuthDatabase");
+                services.AddDbContext<ProxyContext>(options => options.UseNpgsql(connectionString));
+                services.AddTransient<DbContext, ProxyContext>();
+                services.AddTransient<IDomainManager, DomainManager>();
+                services.AddTransient<IResourceOwnerPasswordValidator, DomainValidator>();
+            }
+            else
+            {
+                string connectionString = this.Configuration.GetConnectionString("AuthDatabase");
+                services.AddDbContext<AuthContext>(options => options.UseNpgsql(connectionString));
+                services.AddTransient<DbContext, AuthContext>();
+                services.AddTransient<IUserManager, UserManager>();
+                services.AddTransient<IResourceOwnerPasswordValidator, ResourceOwnerPasswordValidator>();
+                services.AddTransient<IProfileService, ProfileService>();
+                services.AddTransient<ICrypto, Crypto>();
+            }
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -88,14 +102,13 @@ namespace Auth.API
 
             app.UseIdentityServer();
             app.UseCookies(this.Configuration);
-            app.InitRoles();
-            if (Convert.ToBoolean(this.Configuration["Settings:IsProxy"]))
+            if (!this.isProxy)
             {
+                app.InitRoles();
                 app.UseProxy(this.Configuration);
+                app.UseFacebook(this.Configuration);
+                app.UseLinkedin(this.Configuration);
             }
-
-            app.UseFacebook(this.Configuration);
-            app.UseLinkedin(this.Configuration);
 
             app.UseMvc();
         }

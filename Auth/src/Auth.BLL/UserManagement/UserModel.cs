@@ -1,4 +1,4 @@
-﻿namespace Auth.BLL.Models
+﻿namespace Auth.BLL.UserManagement
 {
     public class UserModel
     {

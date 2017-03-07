@@ -128,11 +128,13 @@ namespace Auth.API.Extensions
 
         protected override async Task<AuthenticateResult> HandleRemoteAuthenticateAsync()
         {
+            var domain = this.Request.Query["domain"];
+            var sid = this.Request.Query["sid"];
             TokenClient client = new TokenClient(this.Options.TokenEndpoint, this.Options.ClientId, this.Options.ClientSecret);
-            var responseToken = await client.RequestResourceOwnerPasswordAsync("dimas", "za", "LMS.public openid");
+            var responseToken = await client.RequestResourceOwnerPasswordAsync(domain, sid, "LMS.public openid");
             JwtSecurityToken securityToken = new JwtSecurityToken(responseToken.AccessToken);
             var emailClime = new Claim(ClaimTypes.Email, securityToken.Claims.FirstOrDefault(x => x.Type == "sub").Value);
-            var roleClime = new Claim(ClaimTypes.Role, securityToken.Claims.FirstOrDefault(x => x.Type == "role").Value);
+            var roleClime = new Claim(ClaimTypes.Role, "user");
             var claimPrincipal = new ClaimsPrincipal(Identity.Create(this.Options.AuthenticationScheme, emailClime, roleClime));
             AuthenticationProperties prop = new AuthenticationProperties();
             prop.StoreTokens(new[] { new AuthenticationToken { Name = "access_token", Value = responseToken.AccessToken } });

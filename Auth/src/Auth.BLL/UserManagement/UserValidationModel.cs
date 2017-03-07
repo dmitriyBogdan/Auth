@@ -1,6 +1,6 @@
 ﻿using Auth.DAL.Entities;
 
-namespace Auth.BLL.Models
+namespace Auth.BLL.UserManagement
 {
     public class UserValidationModel
     {

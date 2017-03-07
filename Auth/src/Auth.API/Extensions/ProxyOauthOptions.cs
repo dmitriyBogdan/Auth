@@ -17,6 +17,5 @@ namespace Auth.API.Extensions
             this.UserInformationEndpoint = "http://localhost:5001/connect/authorize";
             this.CallbackPath = "/ExternalLogin";
         }
-        
     }
 }

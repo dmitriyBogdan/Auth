@@ -1,6 +1,6 @@
 ﻿using System.Security.Claims;
 using System.Threading.Tasks;
-using Auth.BLL.Models;
+using Auth.BLL.UserManagement;
 using Auth.DAL.Entities;
 using Microsoft.AspNetCore.Http;
 

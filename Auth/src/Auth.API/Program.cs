@@ -23,14 +23,7 @@ namespace Auth.API
                 .UseIISIntegration()
                 .UseStartup<Startup>()
                 .Build();
-            try
-            {
                 host.Run();
-            }
-            catch (Exception exception)
-            {
-                Console.WriteLine(exception.Message);
-            }
         }
     }
 }

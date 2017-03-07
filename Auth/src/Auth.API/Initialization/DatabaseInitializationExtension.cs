@@ -11,7 +11,7 @@ namespace Auth.API.Initialization
         {
             using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
             {
-                serviceScope.ServiceProvider.GetRequiredService<AuthContext>().Database.Migrate();
+                serviceScope.ServiceProvider.GetRequiredService<DbContext>().Database.Migrate();
             }
         }
     }

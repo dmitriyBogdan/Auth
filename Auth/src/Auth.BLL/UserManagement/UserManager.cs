@@ -1,23 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Auth.BLL.Interfaces;
-using Auth.BLL.Models;
 using Auth.DAL;
 using Auth.DAL.Entities;
 using IdentityModel;
 using IdentityModel.Client;
-using IdentityServer4.Extensions;
-using IdentityServer4.Models;
 using IdentityServer4.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Claim = Auth.DAL.Entities.Claim;
 
-namespace Auth.BLL
+namespace Auth.BLL.UserManagement
 {
     public class UserManager : IUserManager
     {
