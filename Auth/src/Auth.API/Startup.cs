@@ -62,8 +62,7 @@ namespace Auth.API
             services.AddIdentityServer()
                 .AddSigningCredential(cert)
                 .AddInMemoryClients(FakeDataConfig.GetClients())
-                .AddInMemoryApiResources(FakeDataConfig.GetApiResources())
-                .AddInMemoryIdentityResources(FakeDataConfig.GetIdentityResources());
+                .AddInMemoryApiResources(FakeDataConfig.GetApiResources());
             if (this.isProxy)
             {
                 string connectionString = this.Configuration.GetConnectionString("AuthDatabase");

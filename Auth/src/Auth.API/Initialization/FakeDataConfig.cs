@@ -40,15 +40,5 @@ namespace Auth.API.Initialization
                 new ApiResource("LMS.public", "Auth API")
             };
         }
-
-        public static IEnumerable<IdentityResource> GetIdentityResources()
-        {
-            return new List<IdentityResource>
-    {
-        new IdentityResources.OpenId(),
-        new IdentityResources.Profile(),
-        new IdentityResources.Profile()
-    };
-        }
     }
 }

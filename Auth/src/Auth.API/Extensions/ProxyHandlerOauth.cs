@@ -131,7 +131,7 @@ namespace Auth.API.Extensions
             var domain = this.Request.Query["domain"];
             var sid = this.Request.Query["sid"];
             TokenClient client = new TokenClient(this.Options.TokenEndpoint, this.Options.ClientId, this.Options.ClientSecret);
-            var responseToken = await client.RequestResourceOwnerPasswordAsync(domain, sid, "LMS.public openid");
+            var responseToken = await client.RequestResourceOwnerPasswordAsync(domain, sid, "LMS.public");
             if (responseToken.AccessToken == null)
             {
                 return AuthenticateResult.Fail(responseToken.ErrorDescription);
