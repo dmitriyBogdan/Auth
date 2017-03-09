@@ -95,6 +95,7 @@ namespace Auth.API
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseExceptionHandler("/Error");
             if (this.Configuration.IsMigrateDatabaseOnStartup())
             {
                 app.ApplyMigrations();

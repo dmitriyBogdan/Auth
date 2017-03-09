@@ -129,6 +129,12 @@ namespace Auth.API.Controllers
             return this.Redirect(returnUrl);
         }
 
+        [Route("Error")]
+        public IActionResult Error(string errorId)
+        {
+            return this.Json(new { message = errorId });
+        }
+
         [Route("ErrorHandler")]
         public async Task<IActionResult> ErrorHandler()
         {

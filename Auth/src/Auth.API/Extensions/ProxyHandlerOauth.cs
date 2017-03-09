@@ -95,7 +95,7 @@ namespace Auth.API.Extensions
                     return false;
                 }
 
-                throw new AggregateException("Unhandled remote failure.", exception);
+                return true;
             }
 
             TicketReceivedContext context = new TicketReceivedContext(this.Context, (RemoteAuthenticationOptions)this.Options, ticket)
@@ -132,6 +132,11 @@ namespace Auth.API.Extensions
             var sid = this.Request.Query["sid"];
             TokenClient client = new TokenClient(this.Options.TokenEndpoint, this.Options.ClientId, this.Options.ClientSecret);
             var responseToken = await client.RequestResourceOwnerPasswordAsync(domain, sid, "LMS.public openid");
+            if (responseToken.AccessToken == null)
+            {
+                return AuthenticateResult.Fail(responseToken.ErrorDescription);
+            }
+
             JwtSecurityToken securityToken = new JwtSecurityToken(responseToken.AccessToken);
             var emailClime = new Claim(ClaimTypes.Email, securityToken.Claims.FirstOrDefault(x => x.Type == "sub").Value);
             var roleClime = new Claim(ClaimTypes.Role, "user");

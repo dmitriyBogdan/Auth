@@ -5,6 +5,9 @@ using System.Threading.Tasks;
 using AspNet.Security.OAuth.LinkedIn;
 using Auth.API.Extensions;
 using IdentityServer4;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.AspNetCore.Builder;
 
@@ -16,6 +17,14 @@ namespace Auth.API.Extensions
             this.AuthorizationEndpoint = "http://localhost:5001/connect/authorize";
             this.UserInformationEndpoint = "http://localhost:5001/connect/authorize";
             this.CallbackPath = "/ExternalLogin";
+            this.Events = new OAuthEvents()
+            {
+                OnRemoteFailure = delegate(FailureContext context)
+                {
+                    context.Response.Redirect($"/Error?errorId={context.Failure.Message}");
+                    return Task.CompletedTask;
+                }
+            };
         }
     }
 }
